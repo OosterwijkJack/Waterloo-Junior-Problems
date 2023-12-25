@@ -1,7 +1,7 @@
 import os
 # The Cell Sell
 """
-The function of this program is to caclulate the best cell phone usage plan
+The function of this program is to caclulate the best cell phone usage plan for Moe Bull
 
 """
 
@@ -21,29 +21,34 @@ def main():
     # calculate plan B
     B_cost = B_price(day,even,week)
 
-    # print or append test data
+    # output placed in out list used later to check if correct
     out.append(f"Plan A costs {A_cost}") 
     out.append(f"Plan B costs {B_cost}")
-    #print(f"Plan A costs {A_cost}")
-    #print(f"Plan B costs {B_cost}")
 
     if  A_cost == B_cost:
         out.append("Plan A and B are the same price.")
-        #print("Plan A and B are the same price")
     else:
         out.append("Plan A is cheapest." if A_cost < B_cost else "Plan B is cheapest.")
-        #print("Plan A is cheapest" if A_cost < B_cost else "Plan B is cheapest")
-    testing(dataout, out)
+
+    if testing(dataout, out):
+        display(out)
 
 def testing(dataout, out):
     # compare correct outputs and program output
+    good = None
     for a,i in zip(dataout, out):
         if a == i:
             print(":) good")
+            good = True
         else:
             print(":( Bad")
             print(f"correct output: {a}")
             print(f"your output: {i}")
+            good = False
+    return good
+
+def display(out):
+    print('\n'.join(out))
 
 def A_price(day, evening, weekend):
     # 100 free minutes then 25 cents a minute
