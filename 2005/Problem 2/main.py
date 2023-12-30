@@ -1,11 +1,11 @@
 import os
+
 """
 RSA Numbers
 
 The purpose of this program is to identify how many RSA numbers are in a range
 
 """
-
 def main():
     here = os.getcwd()
     data_index = 3 # which test data fild is used
@@ -39,18 +39,17 @@ def testing(dataout, out):
 
 def get_valid(lower, upper):
     total_valid = 0
-    for i in range(lower, upper+1): # add 1 range is not inclusive 
+    for i in range(lower, upper+1): # add 1 range is not inclusive
         if valid_RSA(i): # if number is a valid RSA add to total
             total_valid += 1
     return total_valid
 
 def valid_RSA(number) ->bool:
     divs = 0
-    for i in range(1,number+1):
+    for i in range(1 ,number+1):
         if number % i == 0: # check how many dividers the number has
             divs += 1
+    return True if divs == 4 else False
 
-    if divs == 4: return True # if 4 that means it is a valid RSA
-    else: return False
 if __name__ == "__main__":
     main()
