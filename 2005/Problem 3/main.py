@@ -21,9 +21,9 @@ def main():
     data = inverse_direction(data)
 
     # create readable text based on inverted list and directions
-    directions = create_home_directions(data)
-    if testing(dataout, directions):
-        print('\n'.join(directions))
+    out = create_home_directions(data)
+    if testing(dataout, out):
+        print('\n'.join(out))
 
 
 def testing(dataout, out):
