@@ -10,45 +10,15 @@ word followed by the letter S
 
 ANANA: monkey laungage because AN->monkey(AN)->monkey(A)
 
+Create a diagram of how every possibility should be handled then program 
+
 """
 
 def main():
     # if letter is A true
     # if letter is B check if monkey language word follows then has an S afterwards
-    print(is_monkey_language("BBSANBASSNA"))
+    pass
 
-def is_monkey_language(word):
-    N_index = 0
-    if "N" in word:
-        N_index = word.find("N")
-        if not is_A_word(word[0:N_index], word): # a word before N
-            return False
-        if not is_monkey_language(word[N_index+1:]): # is monkey after the N
-            return False
-    else:
-        if(not is_A_word(word, word)):
-            return False
-    return True
-            
-
-def is_A_word(text):
-
-    if text == "A":
-        return True
-    
-    if len(text) > 1:
-        if text[0] == "B":
-
-            if not is_monkey_language(text[1:-1]):
-                return False
-            if text[-1] != "S":
-                return False
-            
-        else:
-            return False
-        
-        return True
-    
 
 
 
