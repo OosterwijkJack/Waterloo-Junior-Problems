@@ -21,37 +21,40 @@ import os
 FALSE = -1
 unfinished_B = 0
 def main():
-    """
-    data_index = 3
+    
+    data_index = 4
     cur_dir = os.getcwd()
     datain = open(os.path.join(cur_dir,f"testing/j5.{data_index}.in"),"r").read().splitlines() # in data
     dataout = open(os.path.join(cur_dir,f"testing/j5.{data_index}.out"),"r").read().splitlines() # in data 
     out = [] # program output
-    
+    print(datain)
     for i in datain[0:-1]:
         try:
             if (is_string_valid(i)):
+                print("YES")
                 out.append("YES")
             else:
+                print("NO")
                 out.append("NO")
         except IndexError:
+            print("YES")
             out.append("YES")
-
-    output = testing(dataout, out)
-    if output:
-        print('\n'.join(out))
-    """
+    print(out)
+    #if testing(dataout, out):
+        #"\n".join(out)
     
+    
+    """
     try:
-        if (is_string_valid("BBASNBASSNA")):
+        if (is_string_valid("ANBASNBBASNAS")):
             print("YES")
         else:
             print("NO")
     except IndexError:
-        print("YES")
-        
-
-
+        print("YES INDEX")
+    """
+    
+    
 def testing(dataout, out):
     # compare correct outputs and program output
     ok = None
@@ -67,7 +70,6 @@ def testing(dataout, out):
             print(f"your output: {i}")
             ok = False
     return ok
-
 
 def is_string_valid(word):
     index = 0
@@ -104,6 +106,7 @@ def is_A_word(word,index):
                 return FALSE
             else:
                 unfinished_B -= 1 # B finished
+                index += 1
         except IndexError: # reached end without finishing a B
             return FALSE
     else:
@@ -114,25 +117,27 @@ def is_A_word(word,index):
     else:
         return index # call is not reversing return normal index
 
-
 def is_monkey_word(word,index):
     global unfinished_B
     no_call = True
     new_index = is_A_word(word,index) # monkey word always starts with A_word
     if new_index == FALSE: # does not start with a_word
         return FALSE
+    else:
+        index = new_index
     
-    if word[new_index] == "A":
+    if word[index] == "A":
         no_call = False
         index += 1
-
+    if word[new_index] == "N":
+        index = new_index
     try:
         if word[index] == "N":
             no_call = False
             index +=1
             new_index = is_monkey_word(word, index)
             if new_index != FALSE:
-                return new_index
+                index = new_index
             else:
                 return FALSE
     except IndexError:
