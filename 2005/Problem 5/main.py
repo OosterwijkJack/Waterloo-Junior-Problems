@@ -8,9 +8,12 @@ followed by the letter N and a monkey language word.
 2. An A-word is either only the single letter A, or the letter B followed by a monkey language
 word followed by the letter S
 
-ANANA: monkey laungage because AN->monkey(AN)->monkey(A)
 
 Create a diagram of how every possibility should be handled then program 
+ANBASNBBASNAS -> monkey(A_word(A)) ->  N -> monkey(a_word(B)-> monkey(a_word(A))-> S) -> N
+-> monkey(a_word(B) -> monkey(a_word(B) ->  monkey(a_word(A) -> S ) -> N -> monkey(a_word(A)) -> S) 
+
+
 
 """
 
@@ -23,4 +26,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main() 
