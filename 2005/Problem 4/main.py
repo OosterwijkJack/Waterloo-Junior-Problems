@@ -7,7 +7,6 @@ in a spiral within a cross within a room which dimensions are specified
 (first element is index of 1)
 """
 import os
-import time
 
 class myArray:
     def __init__(self, data) -> None:
@@ -87,9 +86,9 @@ def main():
     steps = int(datain[4])
 
     rect = create_rect(outline_rect_dimensions, cross_rect_dimensions) # rect object making it easy to work with
-    answer = (spiral(rect, steps))
-    if testing(dataout, answer): # check if program output is correct
-        print(answer)
+    out = (spiral(rect, steps))
+    if testing(dataout, out): # check if program output is correct
+        print(out)
 
 def testing(dataout, out):
     # compare correct outputs and program output
