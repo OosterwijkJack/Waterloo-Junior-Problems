@@ -22,7 +22,6 @@ FALSE = -1
 unfinished_B = 0
 def main():
     data_index = 4
-    
     cur_dir = os.getcwd()
     datain = open(os.path.join(cur_dir,f"2005/Problem 5/testing/j5.{data_index}.in"),"r").read().splitlines() # in data
     dataout = open(os.path.join(cur_dir,f"2005/Problem 5/testing/j5.{data_index}.out"),"r").read().splitlines() # in data 
