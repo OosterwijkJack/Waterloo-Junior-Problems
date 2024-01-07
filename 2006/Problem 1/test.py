@@ -6,13 +6,13 @@ import os
 def main():  
     year = 2006
     problem = 1
-    files = len(os.listdir(Path.joinpath(Path.cwd(), f"{year}/Problem {problem}/test_data/j{problem}"))) // 2
+    files = len(os.listdir(Path.joinpath(Path.cwd(), f"{year}/Problem {problem}/test_data"))) // 2
     
     for i in range(files):
         index = i+1
 
-        datain = open(Path.joinpath(Path.cwd(), f"{year}/Problem {problem}/test_data/j{problem}/j{problem}.{index}.in")).read().splitlines()
-        dataout = open(Path.joinpath(Path.cwd(), f"{year}/Problem {problem}/test_data/j{problem}/j{problem}.{index}.out")).read().splitlines()
+        datain = open(Path.joinpath(Path.cwd(), f"{year}/Problem {problem}/test_data/j{problem}.{index}.in")).read().splitlines()
+        dataout = open(Path.joinpath(Path.cwd(), f"{year}/Problem {problem}/test_data/j{problem}.{index}.out")).read().splitlines()
         out = calorie.begin(*datain)
 
         if testing(dataout, out):
