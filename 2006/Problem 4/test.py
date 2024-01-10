@@ -23,7 +23,8 @@ def main():
         dataout = open(dataout_dir).read().splitlines()
 
         dataout = [str(x) for x in dataout]
-        out = scedule.begin(*datain)
+        datain = [int(x) for x in datain]
+        out = scedule.begin(datain)
 
         if testing(dataout, out):
             print("\n".join(out))
