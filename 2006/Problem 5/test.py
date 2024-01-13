@@ -1,11 +1,11 @@
-import scedule
+import Othello
 from pathlib import Path
 import os
 
 
 def main():  
     year = 2006
-    problem = 4
+    problem = 5
     files = len(os.listdir(Path.joinpath(Path.cwd(), f"{year}/Problem {problem}/test_data"))) // 2
     correct = True
     for i in range(files):
@@ -19,15 +19,16 @@ def main():
             dataout_dir = Path.joinpath(Path.cwd(), f"{year}/Problem {problem}/test_data/j{problem}.out")
 
 
-        datain = open(datain_dir).read().splitlines()
-        dataout = open(dataout_dir).read().splitlines()
+        datain = open(datain_dir).read()
+        dataout = open(dataout_dir).read().split()
 
-        dataout = [str(x) for x in dataout]
-        datain = [int(x) for x in datain]
-        out = scedule.begin(datain)
+        dataout = [int(x) for x in dataout]
+
+        out = Othello.begin(datain)
+        input()
 
         if testing(dataout, out):
-            print("\n".join(out))
+            out
         else: correct = False
 
     print("\nPROGRAM PASSED ALL TESTS! :)" if correct else "\nPROGRAM FAILED :(")
