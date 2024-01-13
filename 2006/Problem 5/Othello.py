@@ -37,24 +37,16 @@ WHITE_SQUARE = "⬜"
 BLACK_CIRCLE = "⚫"
 WHITE_CIRCLE = "⚪"
 
+WHITE = 1
+BLACK = 0
+color = bool(BLACK)
+
 @ dataclass
 class Vec2:
-    y : int = 0
     x : int = 0
+    y : int = 0
 
-@ dataclass
-class Scan:
-    left: list
-    right: list
-    up: list
-    down: list
-
-    diag_left_up: list
-    diag_right_up: list
-    diag_left_down: list
-    diag_right_down: list
-
-class Board:
+class Board: # handles the checker board and checkers on the board
     def __init__(self,data) -> None:
         self.data = data
         self.size = Vec2(8,8)
@@ -65,9 +57,22 @@ class Board:
             out += "".join([str(x) for x in i]) + "\n"
         return out
     
-    def get(self, pos: Vec2): # return value of tile
-        return self.data[pos.x][pos.y]
+    def get(self, pos: Vec2): # return value of tile and its position
+        return (self.data[pos.x][pos.y], pos)
+    def set(self,pos:Vec2, value):
+        self.data[pos.x][pos.y] = value
     
+    def count_checkers(self): # counts white and black checkers currently on board
+        black = 0
+        white = 0
+        for i in self.data:
+            for a in i:
+                if a == WHITE_CIRCLE:
+                    white += 1
+                elif a == BLACK_CIRCLE:
+                    black += 1
+        return [black,white]
+
     def set_tile_black(self, pos:Vec2): # places black checker on given tile
         self.data[pos.x][pos.y] = BLACK_CIRCLE
     def set_tile_white(self, pos:Vec2):# places white checker on given tile
@@ -92,20 +97,74 @@ class Board:
 
 
 def main():
-    scene = create_board()
-    scene.set_config_A()
-    print(scene)
+    print(begin("c 4 8 7 8 2 4 7 8 8")) # board layout -> # of moves -> *moves
 
-    scan = scan_board(scene, Vec2(3, 3))
-    print(scan)
+def begin(user_input:str):
+    global color
+    user_input = user_input.split()
+    scene = create_board()
+
+    match user_input[0]: # set beginning layout
+        case 'a':
+            scene.set_config_A()
+        case 'b':
+            scene.set_config_B()
+        case 'c':
+            scene.set_config_C()
+
+    if len(user_input) > 2:
+        user_moves = [Vec2(int(user_input[x])-1,int(user_input[x+1])-1) for x in range(2,len(user_input),2)] # seperates moves in to vectors
+    else: user_moves = [] # if no moves
+
+    for i in user_moves:
+        pos = i
+        moves = valid_moves(scene, pos) # check if move is valid
+        make_moves(scene,moves,pos) # apply move
+        color = not color # alternate turns between black and white
+        print(scene) # show board
+
+    return scene.count_checkers() # return black and white checkers currently on board
+
+def make_moves(scene:Board, moves:list, pos: Vec2):
+    current = BLACK_CIRCLE if color == BLACK else WHITE_CIRCLE
+    if len(moves)> 0: 
+        scene.set(pos, current) # apply where piece was placed
+    for i in moves: # apply all changes that came from the placment of the piece
+        for a in range(len(i)) :
+            scene.set(i[a][1], current)   # update
+
+def is_checkers(scan):
+    values = []
+    for i in scan:
+        values += i[0]
+    return BLACK_CIRCLE in values and WHITE_CIRCLE in values # checks if black and white checkers are present
+
+def valid_moves(scene: Board, pos: Vec2): # decides wether the position of a move is valid
+    scan = scan_board(scene, pos)
+    scan = list(filter(is_checkers,scan)) # remove scans that dont have both color checkers
+    opposite = BLACK_CIRCLE if color == WHITE else WHITE_CIRCLE # store opposite checker than current 
+    current = BLACK_CIRCLE if color == BLACK else WHITE_CIRCLE
+
+    moves = []
+    for i in (scan):
+        for a in range(len(i)):
+            if i[a][0] != opposite: # must start with opposite piece
+                if a == 0:
+                    break
+
+            if i[a][0] == current: # if current piece reached
+                if a != 0:
+                    moves.append(i[:a+1]) # apply all the moves
+                    break
+
+    return moves
 
 
 def scan_board(scene: Board, pos: Vec2): # returns a list of all pieces on board from every direction starting at a position
-    straight_scan = scan_straight(scene,pos)
-    diagonal_scan = scan_diagonal(scene,pos)
+    straight_scan = scan_straight(scene,pos) # scans up, left, down, right relative to position
+    diagonal_scan = scan_diagonal(scene,pos) # scans all diagonals relative to positions
 
-    data = straight_scan + diagonal_scan
-    return Scan(*data)
+    return straight_scan + diagonal_scan # concatenate 
 
 def scan_straight(scene: Board, pos: Vec2):
     # left scan
