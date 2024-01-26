@@ -86,8 +86,8 @@ class WordMap:
             return 0
     def get_LD(self, pos):
         try:
-            not_negative(pos[0]-1)
-            return self.data[pos[0]-1][pos[1]+1]
+            not_negative(pos[1]-1)
+            return self.data[pos[0]+1][pos[1]-1]
         except IndexError:
             return 0
             
@@ -154,9 +154,9 @@ def iterate_word_map(wrd_map):
 
     for i in wrd_map.data:
         for a in i:
-            valid_directions = get_valid_direction(wrd_map, pos)
-            #print(valid_directions)
-            instances += [search_direction(wrd_map, pos, x) for x in valid_directions].count(True)
+            if a == wrd_map.word[0]:
+                valid_directions = get_valid_direction(wrd_map, pos)
+                instances += [search_direction(wrd_map, pos, x) for x in valid_directions].count(True)
             pos.mov_R() # move right
 
         pos.mov_D() # move down
@@ -166,9 +166,9 @@ def iterate_word_map(wrd_map):
 
 def search_direction(wrd_map:WordMap, pos:Pos, direction): # takes direction and contiously searches for next word
     new_pos = Pos(pos.get())
-    all_letters = ""
+    all_letters = wrd_map.word[0]
     # direction is a tuple containing the path and what direction the path is going
-    for i in range(len(wrd_map.word)):
+    for i in range(1,len(wrd_map.word)):
 
         letter = get_next_letter(wrd_map, new_pos, direction[1]) # next letter in dir
 
@@ -176,7 +176,6 @@ def search_direction(wrd_map:WordMap, pos:Pos, direction): # takes direction and
             all_letters += letter # all letters found adds up
         
         if all_letters == wrd_map.word:
-            print(new_pos.pos)
             return True
         
         if letter != wrd_map.word[i]:
@@ -215,7 +214,7 @@ def get_next_letter(wrd_map:WordMap, pos:Pos,direction):
         return next
     if direction == "LD":
         next = wrd_map.get_LD(pos.get())
-        pos.mov_R()
+        pos.mov_LD()
         return next
     
 # return directions which next letter is the same as first letter of word
@@ -224,7 +223,7 @@ def get_valid_direction(wrd_map:WordMap, pos: Pos):
     valid = []
 
     for i in directions:
-        if i[0] == wrd_map.word[0]:
+        if i[0] == wrd_map.word[1]: # second letter in word since this is where the search starts
             valid.append(i)
     return valid
 
