@@ -13,7 +13,8 @@ if  not jump to orignal letter in iteration and check next direction
 if all directions checked jump to next letter in iteration
 
 
-words can be found if letters are at a 90 degree angle but only once per branch
+words can be found if letters are at a 90 degree angle but only once per branch 
+(if diag LU,RD if straight U D)
 
 
 p
@@ -26,6 +27,18 @@ s
 
 example of perhaps occuring in a word hunt twice
 """
+
+right_angle_direction = { # convert directions to right angle directions
+    "U": ("L, R"),
+    "D": ("L","R"),
+    "L": ("U", "D"),
+    "R": ("U", "D"),
+
+    "RU": ("RD", "LU"),
+    "RD": ("LD", "RU"),
+    "LU": ("LD", "RU"),
+    "LD": ("RD", "LU")
+}
 class WordMap:
 
     def __init__(self, data, word) -> None:
@@ -134,13 +147,14 @@ class Pos:
         return self.pos
 
 def main():
-    word = "MENU"
-    dimensions = (5, 7)
-    wrd_map = """F T R U B L K
-P M N A X C U
-A E R C N E O
-M N E U A R M
-M U N E M N S""".split("\n")
+    word = "NATURE"
+    dimensions = (6, 9)
+    wrd_map = """N A T S F E G Q N 
+S A I B M R H F A 
+C F T J C U C L T 
+K B H U P T A N U 
+D P R R R J D I R 
+I E E K M E G B E""".split("\n")
     wrd_map = WordMap([x.replace(" ", "") for x in wrd_map], word)
 
     print()
@@ -155,8 +169,8 @@ def iterate_word_map(wrd_map):
     for i in wrd_map.data:
         for a in i:
             if a == wrd_map.word[0]:
-                valid_directions = get_valid_direction(wrd_map, pos)
-                instances += [search_direction(wrd_map, pos, x) for x in valid_directions].count(True)
+                valid_directions = get_valid_direction(wrd_map, pos, wrd_map.word[1]) # get directions that start with next letter in word
+                instances += sum([search_direction(wrd_map, pos, x) for x in valid_directions]) # scan direction for instaces of word
             pos.mov_R() # move right
 
         pos.mov_D() # move down
@@ -164,23 +178,34 @@ def iterate_word_map(wrd_map):
     return instances
 
 
-def search_direction(wrd_map:WordMap, pos:Pos, direction): # takes direction and contiously searches for next word
+def search_direction(wrd_map:WordMap, pos:Pos, direction,right=False): # takes direction and contiously searches for next word
     new_pos = Pos(pos.get())
     all_letters = wrd_map.word[0]
+    instances = 0
     # direction is a tuple containing the path and what direction the path is going
     for i in range(1,len(wrd_map.word)):
+
+        if right == False and len(wrd_map.word)-1 >= i: # if a right angle turn is yet to be made
+            valid_right_directions = get_valid_direction(wrd_map,new_pos, wrd_map.word[i]) # look for next letter in perpendicular
+
+            # only search direction if it is perp to original direction
+            valid_right_directions = [x for x in valid_right_directions if x[1] in right_angle_direction[direction[1]]] 
+            # call self to search perp directions
+            instances += sum([search_direction(wrd_map, pos, x,right=True) for x in valid_right_directions])
 
         letter = get_next_letter(wrd_map, new_pos, direction[1]) # next letter in dir
 
         if letter:
             all_letters += letter # all letters found adds up
         
-        if all_letters == wrd_map.word:
-            return True
+        if all_letters == wrd_map.word: # if word found
+            instances += 1
+            break
         
-        if letter != wrd_map.word[i]:
-            return False
-    return True
+        if letter != wrd_map.word[i]: # if word is not in path
+            return instances
+        
+    return instances
 
 # gets next letter depending on position and direction
 def get_next_letter(wrd_map:WordMap, pos:Pos,direction):
@@ -218,12 +243,12 @@ def get_next_letter(wrd_map:WordMap, pos:Pos,direction):
         return next
     
 # return directions which next letter is the same as first letter of word
-def get_valid_direction(wrd_map:WordMap, pos: Pos):
+def get_valid_direction(wrd_map:WordMap, pos: Pos, letter):
     directions = wrd_map.get_all_diretions(pos.get())
     valid = []
 
     for i in directions:
-        if i[0] == wrd_map.word[1]: # second letter in word since this is where the search starts
+        if i[0] == letter: # second letter in word since this is where the search starts
             valid.append(i)
     return valid
 

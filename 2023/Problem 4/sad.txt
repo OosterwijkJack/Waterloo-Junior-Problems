@@ -1,0 +1,9 @@
+Completed the problem and file got corrupt somehow.
+I will still explain how I did it
+
+take input and make it into two lists
+start tape value is (# of 1s(triangles)) * 3
+
+then for each 1 and every 1 that is "touching it" meaning
+left, right, above, and down minus 1 from start tape value
+
