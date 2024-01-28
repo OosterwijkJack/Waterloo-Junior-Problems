@@ -147,30 +147,28 @@ class Pos:
         return self.pos
 
 def main():
-    word = "NATURE"
-    dimensions = (6, 9)
-    wrd_map = """N A T S F E G Q N 
-S A I B M R H F A 
-C F T J C U C L T 
-K B H U P T A N U 
-D P R R R J D I R 
-I E E K M E G B E""".split("\n")
-    wrd_map = WordMap([x.replace(" ", "") for x in wrd_map], word)
+    word = input()
+    dimensions = (int(input()), int(input()))
+    wrd_map = WordMap([input().replace(" ", "") for x in range(dimensions[0])], word)
 
     print()
     print(wrd_map)
 
-    print(iterate_word_map(wrd_map))
+    # len of list of places where word exists and removes duplicates
+    print(len(remove_duplicates(iterate_word_map(wrd_map))))
 
 def iterate_word_map(wrd_map):
     pos = Pos((0,0))
-    instances = 0
+    instances = []
 
     for i in wrd_map.data:
         for a in i:
             if a == wrd_map.word[0]:
                 valid_directions = get_valid_direction(wrd_map, pos, wrd_map.word[1]) # get directions that start with next letter in word
-                instances += sum([search_direction(wrd_map, pos, x) for x in valid_directions]) # scan direction for instaces of word
+                finds = [search_direction(wrd_map, pos, x) for x in valid_directions] # scan direction for instaces of word
+                for a in finds:
+                    for e in a:
+                        instances.append(e)
             pos.mov_R() # move right
 
         pos.mov_D() # move down
@@ -178,20 +176,24 @@ def iterate_word_map(wrd_map):
     return instances
 
 
-def search_direction(wrd_map:WordMap, pos:Pos, direction,right=False): # takes direction and contiously searches for next word
+def search_direction(wrd_map:WordMap, pos:Pos, direction,right=False,index=1): # takes direction and contiously searches for next word
     new_pos = Pos(pos.get())
-    all_letters = wrd_map.word[0]
-    instances = 0
+    all_letters = wrd_map.word[:index]
+    instances = []
     # direction is a tuple containing the path and what direction the path is going
-    for i in range(1,len(wrd_map.word)):
+    for i in range(index,len(wrd_map.word)):
 
         if right == False and len(wrd_map.word)-1 >= i: # if a right angle turn is yet to be made
             valid_right_directions = get_valid_direction(wrd_map,new_pos, wrd_map.word[i]) # look for next letter in perpendicular
 
             # only search direction if it is perp to original direction
             valid_right_directions = [x for x in valid_right_directions if x[1] in right_angle_direction[direction[1]]] 
-            # call self to search perp directions
-            instances += sum([search_direction(wrd_map, pos, x,right=True) for x in valid_right_directions])
+            # call self to search perp directions at current index
+            finds = [search_direction(wrd_map, new_pos, x,right=True, index=i) for x in valid_right_directions]
+
+            for a in finds:
+                for e in a:
+                    instances.append(e)
 
         letter = get_next_letter(wrd_map, new_pos, direction[1]) # next letter in dir
 
@@ -199,11 +201,11 @@ def search_direction(wrd_map:WordMap, pos:Pos, direction,right=False): # takes d
             all_letters += letter # all letters found adds up
         
         if all_letters == wrd_map.word: # if word found
-            instances += 1
+            instances.append([new_pos.get(), direction[1]])
             break
         
         if letter != wrd_map.word[i]: # if word is not in path
-            return instances
+            break
         
     return instances
 
@@ -251,6 +253,15 @@ def get_valid_direction(wrd_map:WordMap, pos: Pos, letter):
         if i[0] == letter: # second letter in word since this is where the search starts
             valid.append(i)
     return valid
+
+def remove_duplicates(data):
+    seen = []
+
+    for i in data:
+        if i not in seen:
+            seen.append(i)
+
+    return seen
 
 def not_negative(value):
     if value <0:
