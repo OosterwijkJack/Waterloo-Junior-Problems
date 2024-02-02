@@ -6,8 +6,9 @@ iterate graph and start making bigger and bigger square until tree is touched
 log size of squarer
 return biggest square
 
-easiest problem 5 i have seen so far
+This solution to the problem is not a true soluction as it times out in big quantities
 """
+import time
 TREE = "🌲"
 EMPTY = "🔳"
 class Graph:
@@ -32,7 +33,7 @@ class Graph:
             for i in range(size):
                 try:
 
-                    if pos[0] + i > len(self.data) or pos[1] + size > len(self.data[0]):
+                    if pos[0] + i > len(self.data) or pos[1] + size > len(self.data[0]): # make sure index is in range
                         raise IndexError
                     
                     area.append(self.data[pos[0] + (i)][pos[1]:pos[1]+size])
@@ -64,13 +65,20 @@ class Pos:
 
 
 def main():
-    size = 50 # size of square graph
-    trees = [(41,47), (50,9), (19,15), (35,3), (16,17), (17,46), (32,3), (26,26), (14,25), (27,49)] # location of trees (1 index is 0)
+    size = int(input()) # size of square graph
+    tree_num = int(input())
+    trees = []
+    for i in range(tree_num):
+        a = str(input()).split()
+        trees.append((int(a[0]),int(a[1])))
 
+    start = time.time()
     graph = create_graph(size,trees) # create the graph 
-    input(graph) # show pretty graph
+    #input(graph) # show pretty graph
     size = iter_graph(graph) # iter
     print(size)  # out
+
+    print(time.time() - start)
 
 
 def iter_graph(graph): # iterates each position in graph and finds largest square
