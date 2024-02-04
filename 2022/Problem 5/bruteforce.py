@@ -7,6 +7,12 @@ log size of squarer
 return biggest square
 
 This solution to the problem is not a true soluction as it times out in big quantities
+
+brute force time = graph_size^2
+tree check time = trees*32
+
+max trees = 100
+max graph_size = 500 000
 """
 import time
 TREE = "🌲"

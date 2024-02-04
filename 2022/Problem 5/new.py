@@ -3,6 +3,8 @@ name: Square pool
 
 Iterate position of each tree (square can go down left, down right,up left,up right)
 
+check every position surrounding the tree for square (8 positions)
+
 create square array that keeps on expanding until meeting a wall or a tree
 
 find array with the biggest size
@@ -13,8 +15,9 @@ import time
 TREE = "🌲"
 EMPTY = "🔳"
 class Graph:
-    def __init__(self,data) -> None:
-        self.data = data
+    def __init__(self, size, trees) -> None:
+        self.size = size
+        self.trees = trees
 
     def __str__(self) -> str:
         out = ""
@@ -25,6 +28,32 @@ class Graph:
             out += "\n"
 
         return out
+    
+    def create_square_array(self, pos, direction, trees):
+        # assume expanding right down
+
+        size = 0
+        while True:
+            array = []
+            size += 1
+            for i in range(size):
+
+                if size + self.pos[0] > self.size or size + self.pos[1] > self.size: # make sure array dosent leave the map
+                    return size-1
+                
+                if self.is_tree(array): # check if tree in array
+                    return size - 1
+                
+                array.append([(self.pos[0]+i, self.pos[1]+x) for x in range(self.size - (self.size - self.pos[1]))]) # contains positions square will be inside
+
+    def is_tree(self,check): # check if array collides with tree
+        for i in check:
+            for a in i:
+                if [a[0], a[1]] in self.trees:
+                    return False
+        return True
+                
+                
     
 class Pos:
     def __init__(self,pos) -> None:
@@ -54,7 +83,7 @@ def main():
 
     start = time.time()
 
-
+    graph = Graph(size, trees)
 
     print(time.time() - start)
 
