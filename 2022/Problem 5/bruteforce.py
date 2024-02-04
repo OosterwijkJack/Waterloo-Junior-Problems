@@ -74,7 +74,7 @@ def main():
 
     start = time.time()
     graph = create_graph(size,trees) # create the graph 
-    #input(graph) # show pretty graph
+    print(graph) # show pretty graph
     size = iter_graph(graph) # iter
     print(size)  # out
 
